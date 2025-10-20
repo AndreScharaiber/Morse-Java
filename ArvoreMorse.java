@@ -55,6 +55,7 @@ class ArvoreMorse {
 
         atual.caractere = letra;
     }
+
     public char acha(String codigo) {
         Node atual = this.raiz;
 
@@ -68,23 +69,41 @@ class ArvoreMorse {
                 atual = atual.direito;
             }
             i++;
+
+            if (atual == null) {
+                return '\0';
+            }
         }
 
         System.out.println("Decodificando " + codigo + ": " + atual.caractere);
         return atual.caractere;
     }
-
-    public String decodificaTudo(String mensagem) {
+    public String decodificarMensagem(String mensagem) {
         String resultado = "";
-        String[] codigos = mensagem.split(" ");
 
-        for (String codigoAtual : codigos) {
-            resultado = resultado + acha(codigoAtual);
+        int inicio = 0;
+        int fim = 0;
+        mensagem = mensagem.trim();
+
+        while (inicio < mensagem.length()) {
+            fim = inicio;
+            while (fim < mensagem.length() && mensagem.charAt(fim) != ' ') {
+                fim++;
+            }
+            String codigoAtual = mensagem.substring(inicio, fim);
+
+            if (codigoAtual.length() > 0) {
+                char caractereDecodificado = acha(codigoAtual);
+                resultado = resultado + caractereDecodificado;
+            }
+            inicio = fim + 1;
+            while (inicio < mensagem.length() && mensagem.charAt(inicio) == ' ') {
+                inicio++;
+            }
         }
 
         return resultado;
     }
-
     public boolean remove(char c) {
         String codigoParaRemover = null;
         int i = 0;
@@ -122,6 +141,7 @@ class ArvoreMorse {
 
         return false;
     }
+
     public void mostra() {
         System.out.println("Mostrando arvore");
         if (this.raiz == null) {
@@ -131,6 +151,7 @@ class ArvoreMorse {
 
         mostraRecursivo(this.raiz, "");
     }
+
     void mostraRecursivo(Node n, String prefixo) {
         if (n != null) {
             String simb = (n.caractere != '\0') ? " Caractere: " + n.caractere : " (no)";
